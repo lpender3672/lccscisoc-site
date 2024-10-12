@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'mmistakes/minimal-mistakes'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -45,3 +44,19 @@ jobs:
       env:
         ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
       continue-on-error: true
+  
+  deploy:
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      permissions:
+        id-token: write
+        pages: write
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: Configure Pages
+          uses: actions/configure-pages@v4
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
