@@ -33,6 +33,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Install required packages for building Ruby
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libyaml-dev \
+            libgdbm-dev \
+            libreadline-dev \
+            libncurses5-dev \
+            curl \
+            git
+
+      # Clone and install ruby-build (from the sample workflow)
+      - name: Clone ruby-build
+        run: git clone https://github.com/rbenv/ruby-build.git
+      - name: Install ruby-build
+        run: sudo ./ruby-build/install.sh
+
+      # Set the installation prefix within the runner tool cache
+      - name: Set PREFIX for Ruby
+        run: |
+          echo "PREFIX=$RUNNER_TOOL_CACHE/Ruby/3.1/x64" >> $GITHUB_ENV
+    
       - name: Setup Ruby
         uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
         with:
